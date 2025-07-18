@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Cities - Real-Time Traffic & Pollution Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-city"></i>
+                <span>Smart Cities Dashboard</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active" data-page="home">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#traffic" class="nav-link" data-page="traffic">
+                        <i class="fas fa-car"></i> Traffic
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#weather" class="nav-link" data-page="weather">
+                        <i class="fas fa-cloud-sun"></i> Weather
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#pollution" class="nav-link" data-page="pollution">
+                        <i class="fas fa-smog"></i> Pollution
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#air-quality" class="nav-link" data-page="air-quality">
+                        <i class="fas fa-wind"></i> Air Quality
+                    </a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>Real-Time Traffic & Pollution Dashboard</h1>
+                    <p>Monitor live traffic conditions, weather patterns, and environmental data for smart cities worldwide</p>
+                    <div class="city-selector">
+                        <div class="search-container">
+                            <input type="text" id="citySearch" placeholder="Enter city name..." class="city-input">
+                            <button id="searchBtn" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="popular-cities">
+                            <span>Popular Cities:</span>
+                            <button class="city-btn" data-city="New York">New York</button>
+                            <button class="city-btn" data-city="London">London</button>
+                            <button class="city-btn" data-city="Tokyo">Tokyo</button>
+                            <button class="city-btn" data-city="Paris">Paris</button>
+                            <button class="city-btn" data-city="Mumbai">Mumbai</button>
+                        </div>
+                        <div id="selectedCityHome" class="selected-city-home" style="margin-top:18px; display:none;">
+                            <span><strong>Selected City:</strong> <span id="selectedCityNameHome"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+            
+            <div class="features-section">
+                <h2>Dashboard Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-car"></i>
+                        <h3>Live Traffic Monitoring</h3>
+                        <p>Real-time traffic flow analysis with color-coded congestion levels</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-cloud-sun"></i>
+                        <h3>Weather Intelligence</h3>
+                        <p>Current weather conditions and forecasts for informed decision making</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-smog"></i>
+                        <h3>Pollution Tracking</h3>
+                        <p>Comprehensive pollution data with detailed analytics and trends</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-wind"></i>
+                        <h3>Air Quality Index</h3>
+                        <p>Real-time air quality monitoring with health recommendations</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Traffic Page -->
+        <section id="traffic" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-car"></i> Live Traffic Data</h2>
+                <div class="city-display">
+                    <span id="trafficCity">Select a city from the map</span>
+                </div>
+            </div>
+            
+            <div class="traffic-container">
+                <div class="traffic-map-section">
+                    <div id="trafficMap" class="traffic-map"></div>
+                    <div class="traffic-legend">
+                        <h4>Traffic Legend</h4>
+                        <div class="legend-item">
+                            <span class="legend-color green"></span>
+                            <span>Free Flow</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color yellow"></span>
+                            <span>Moderate</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color orange"></span>
+                            <span>Heavy</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color red"></span>
+                            <span>Severe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="traffic-stats">
+                    <div class="stat-card">
+                        <h3>Average Speed</h3>
+                        <div class="stat-value" id="avgSpeed">-- km/h</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Congestion Level</h3>
+                        <div class="stat-value" id="congestionLevel">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Travel Time</h3>
+                        <div class="stat-value" id="travelTime">-- min</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weather Page -->
+        <section id="weather" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-cloud-sun"></i> Real-Time Weather</h2>
+                <div class="city-display">
+                    <span id="weatherCity">Select a city from the map</span>
+                </div>
+            </div>
+            
+            <div class="weather-container">
+                <div class="current-weather">
+                    <div class="weather-main">
+                        <div class="weather-icon">
+                            <i id="weatherIcon" class="fas fa-sun"></i>
+                        </div>
+                        <div class="weather-info">
+                            <h3 id="weatherTemp">--°C</h3>
+                            <p id="weatherDesc">--</p>
+                            <p id="weatherLocation">--</p>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <i class="fas fa-tint"></i>
+                            <span>Humidity: <span id="humidity">--%</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-wind"></i>
+                            <span>Wind: <span id="windSpeed">-- km/h</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-eye"></i>
+                            <span>Visibility: <span id="visibility">-- km</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                            <span>Pressure: <span id="pressure">-- hPa</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="forecast-section">
+                    <h3>5-Day Forecast</h3>
+                    <div class="forecast-grid" id="forecastGrid">
+                        <!-- Forecast items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pollution Page -->
+        <section id="pollution" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-smog"></i> Pollution Monitoring</h2>
+                <div class="city-display">
+                    <span id="pollutionCity">Select a city from the map</span>
+                </div>
+            </div>
+            
+            <div class="pollution-container">
+                <div class="pollution-overview">
+                    <div class="pollution-card">
+                        <h3>PM2.5</h3>
+                        <div class="pollution-value" id="pm25">--</div>
+                        <div class="pollution-status" id="pm25Status">--</div>
+                    </div>
+                    <div class="pollution-card">
+                        <h3>PM10</h3>
+                        <div class="pollution-value" id="pm10">--</div>
+                        <div class="pollution-status" id="pm10Status">--</div>
+                    </div>
+                    <div class="pollution-card">
+                        <h3>NO2</h3>
+                        <div class="pollution-value" id="no2">--</div>
+                        <div class="pollution-status" id="no2Status">--</div>
+                    </div>
+                    <div class="pollution-card">
+                        <h3>O3</h3>
+                        <div class="pollution-value" id="o3">--</div>
+                        <div class="pollution-status" id="o3Status">--</div>
+                    </div>
+                </div>
+                
+                <div class="pollution-charts">
+                    <div class="chart-container">
+                        <h3>Pollution Trends (24h)</h3>
+                        <canvas id="pollutionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Air Quality Page -->
+        <section id="air-quality" class="page">
+            <div class="page-header">
+                <h2><i class="fas fa-wind"></i> Air Quality Index</h2>
+                <div class="city-display">
+                    <span id="aqiCity">Select a city from the map</span>
+                </div>
+            </div>
+            
+            <div class="aqi-container">
+                <div class="aqi-main">
+                    <div class="aqi-gauge">
+                        <div class="gauge-container">
+                            <canvas id="aqiGauge"></canvas>
+                            <div class="gauge-value">
+                                <span id="aqiValue">--</span>
+                                <span class="aqi-label">AQI</span>
+                            </div>
+                        </div>
+                        <div class="aqi-status" id="aqiStatus">--</div>
+                    </div>
+                    
+                    <div class="aqi-breakdown">
+                        <h3>Air Quality Breakdown</h3>
+                        <div class="aqi-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">PM2.5</span>
+                                <span class="metric-value" id="aqiPm25">--</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">PM10</span>
+                                <span class="metric-value" id="aqiPm10">--</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">NO2</span>
+                                <span class="metric-value" id="aqiNo2">--</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">O3</span>
+                                <span class="metric-value" id="aqiO3">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="aqi-chart">
+                    <h3>Air Quality History</h3>
+                    <canvas id="aqiHistoryChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading data...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
